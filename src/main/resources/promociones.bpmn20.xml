@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+        xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:flowable="http://flowable.org/bpmn"
+        xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+        xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+        xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+        xmlns:design="http://flowable.org/design"
+        typeLanguage="http://www.w3.org/2001/XMLSchema"
+        expressionLanguage="http://www.w3.org/1999/XPath"
+        targetNamespace="http://bpmn.io/schema/bpmn"
+        design:palette="flowable-work-process-palette">
+  <process id="promociones" name="Promociones" isExecutable="true" flowable:candidateStarterGroups="flowableUser">
+    <!-- Tareas de usuario para ingresar día de la semana -->
+    <userTask flowable:candidateGroups="managers" id="dia_semana" name="Pruebas de test"></userTask>
+
+    <!-- Tareas de servicio para promociones -->
+    <serviceTask id="promo_hamburgueza" name="Hamburguesas 50% de descuento" flowable:class="test.Lunes" ></serviceTask>
+    <serviceTask id="promo_perros" name="Perros calientes 50% de descuento" flowable:class="test.Martes"></serviceTask>
+    <serviceTask id="promo_patacon" name="Patacones 50% de descuento" flowable:class="test.Miercoles"></serviceTask>
+    <serviceTask id="promo_pizza" name="Pizza 50% de descuento" flowable:class="test.Jueves"></serviceTask>
+    <serviceTask id="promo_picada" name="Picada 50% de descuento" flowable:class="test.Viernes"></serviceTask>
+
+    <!-- Tareas de usuario para decisiones y pagos -->
+    <serviceTask id="pensar_comprar_hamburquesa" name="Decidir comprar hamburguesa" flowable:assignee="${initiator}" flowable:class="test.hamburguesas.decidir" flowable:formFieldValidation="false"></serviceTask>
+    <serviceTask id="pensar_comprar_perros" name="Decidir comprar perros calientes" flowable:assignee="${initiator}" flowable:class="test.perros_calientes.decidir" flowable:formFieldValidation="false"></serviceTask>
+    <serviceTask id="pensar_comprar_patacon" name="Decidir comprar patacones" flowable:assignee="${initiator}" flowable:class="test.patacones.decidir" flowable:formFieldValidation="false"></serviceTask>
+    <serviceTask id="pensar_comprar_pizza" name="Decidir comprar pizzas" flowable:assignee="${initiator}" flowable:class="test.pizzas.decidir" flowable:formFieldValidation="false"></serviceTask>
+    <serviceTask id="pensar_comprar_picada" name="Decidir comprar Picadas" flowable:assignee="${initiator}" flowable:class="test.picadas.decidir" flowable:formFieldValidation="false"></serviceTask>
+
+    <serviceTask id="pagar_hamburguesa" name="Pagar hamburguesa" flowable:assignee="${initiator}" flowable:class="test.hamburguesas.pagar" flowable:formFieldValidation="false"></serviceTask>
+    <serviceTask id="retirarse_hamburguesa" name="Retirarse hamburguesa" flowable:assignee="${initiator}" flowable:class="test.hamburguesas.retirarse" flowable:formFieldValidation="false"></serviceTask>
+
+    <serviceTask id="pagar_perro" name="Pagar perros" flowable:assignee="${initiator}" flowable:class="test.perros_calientes.pagar" flowable:formFieldValidation="false"></serviceTask>
+    <serviceTask id="retirarse_perros" name="Retirarse perros" flowable:assignee="${initiator}" flowable:class="test.perros_calientes.retirarse" flowable:formFieldValidation="false"></serviceTask>
+
+    <serviceTask id="pagar_patacon" name="Pagar patacon" flowable:assignee="${initiator}" flowable:class="test.patacones.pagar" flowable:formFieldValidation="false"></serviceTask>
+    <serviceTask id="retirarse_patacon" name="Retirarse patacon" flowable:assignee="${initiator}" flowable:class="test.patacones.retirarse" flowable:formFieldValidation="false"></serviceTask>
+
+    <serviceTask id="pagar_pizza" name="Pagar pizza" flowable:assignee="${initiator}" flowable:formFieldValidation="false" flowable:class="test.pizzas.pagar"></serviceTask>
+    <serviceTask id="retirarse_pizza" name="Retirarse pizza" flowable:assignee="${initiator}" flowable:formFieldValidation="false" flowable:class="test.pizzas.retirarse"></serviceTask>
+
+    <serviceTask id="pagar_picada" name="Pagar picada" flowable:assignee="${initiator}" flowable:formFieldValidation="false" flowable:class="test.picadas.pagar"></serviceTask>
+    <serviceTask id="retirarse_picada" name="Retirarse picada" flowable:assignee="${initiator}" flowable:formFieldValidation="false" flowable:class="test.picadas.retirarse"></serviceTask>
+
+    <!-- Gateways para decisiones -->
+    <exclusiveGateway id="promo_dia" name="Promociones que se manejan"></exclusiveGateway>
+    <exclusiveGateway id="decisión_hamburguesa" name="¿Comprará hamburguesa?"></exclusiveGateway>
+    <exclusiveGateway id="decision_perro" name="¿Comprará perro caliente?"></exclusiveGateway>
+    <exclusiveGateway id="decision_patacon" name="¿Comprará patacon?"></exclusiveGateway>
+    <exclusiveGateway id="decision_pizza" name="¿Comprará pizza?"></exclusiveGateway>
+    <exclusiveGateway id="decision_picada" name="¿Comprará picada?"></exclusiveGateway>
+
+    <!-- Eventos de inicio y fin -->
+    <startEvent id="Inicio" name="Comienzo" flowable:initiator="initiator" flowable:formFieldValidation="false"></startEvent>
+    <endEvent id="finalización" name="Fin"></endEvent>
+
+    <!-- Flujos de secuencia -->
+    <!-- Flujo inicial -->
+    <sequenceFlow id="bpmnSequenceFlow_9" sourceRef="Inicio" targetRef="dia_semana"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_11" sourceRef="dia_semana" targetRef="promo_dia"></sequenceFlow>
+
+    <!-- Promociones por día -->
+    <!-- Lunes: Hamburguesas -->
+    <sequenceFlow id="bpmnSequenceFlow_15" name="Lunes" sourceRef="promo_dia" targetRef="promo_hamburgueza">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${lunes}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_27" sourceRef="promo_hamburgueza" targetRef="pensar_comprar_hamburquesa"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_37" sourceRef="pensar_comprar_hamburquesa" targetRef="decisión_hamburguesa"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_39" name="Si" sourceRef="decisión_hamburguesa"  targetRef="pagar_hamburguesa" >
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${si}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_41" name="No" sourceRef="decisión_hamburguesa"  targetRef="retirarse_hamburguesa" >
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${no}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_44" sourceRef="pagar_hamburguesa" flowable:class="test.hamburguesas.pagar" targetRef="finalización"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_43" sourceRef="retirarse_hamburguesa" flowable:class="test.hamburguesas.retirarse"   targetRef="finalización"></sequenceFlow>
+
+    <!-- Martes: Perros calientes -->
+    <sequenceFlow id="bpmnSequenceFlow_17" name="Ventas" sourceRef="promo_dia" targetRef="promo_perros">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ventas}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_29" sourceRef="promo_perros" targetRef="pensar_comprar_perros"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_48" sourceRef="pensar_comprar_perros" targetRef="decision_perro"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_52" name="Si" sourceRef="decision_perro"  targetRef="pagar_perro">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${si}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_56" name="No" sourceRef="decision_perro" targetRef="retirarse_perros">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${no}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_57" sourceRef="pagar_perro" flowable:class="test.perros_calientes.pagar" targetRef="finalización"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_58" sourceRef="retirarse_perros" flowable:class="test.perros_calientes.pagar" targetRef="finalización"></sequenceFlow>
+
+    <!-- Miércoles: Patacones -->
+    <sequenceFlow id="bpmnSequenceFlow_19" name="Miércoles" sourceRef="promo_dia" targetRef="promo_patacon">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${miercoles}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_31" sourceRef="promo_patacon" targetRef="pensar_comprar_patacon"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_60" sourceRef="pensar_comprar_patacon" targetRef="decision_patacon"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_62" name="Si" sourceRef="decision_patacon" targetRef="pagar_patacon">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${si}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_64" name="No" sourceRef="decision_patacon" targetRef="retirarse_patacon">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${no}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_65" sourceRef="pagar_patacon" flowable:class="test.patacones.pagar" targetRef="finalización"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_66" sourceRef="retirarse_patacon" flowable:class="test.patacones.retirarse" targetRef="finalización"></sequenceFlow>
+
+    <!-- Jueves: Pizza -->
+    <sequenceFlow id="bpmnSequenceFlow_21" name="Jueves" sourceRef="promo_dia" targetRef="promo_pizza">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${jueves}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_33" sourceRef="promo_pizza" targetRef="pensar_comprar_pizza"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_68" sourceRef="pensar_comprar_pizza" targetRef="decision_pizza"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_70" name="Si" sourceRef="decision_pizza" targetRef="pagar_pizza">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${si}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_72" name="No" sourceRef="decision_pizza" targetRef="retirarse_pizza">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${no}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_73" sourceRef="pagar_pizza" flowable:class="test.pizzas.pagar" targetRef="finalización"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_74" sourceRef="retirarse_pizza" flowable:class="test.pizzas.retirarse" targetRef="finalización"></sequenceFlow>
+
+    <!-- Viernes: Picada -->
+    <sequenceFlow id="bpmnSequenceFlow_23" name="Viernes" sourceRef="promo_dia" targetRef="promo_picada">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${viernes}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_35" sourceRef="promo_picada" targetRef="pensar_comprar_picada"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_76" sourceRef="pensar_comprar_picada" targetRef="decision_picada"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_78" name="Si" sourceRef="decision_picada" targetRef="pagar_picada">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${si}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_84" name="No" sourceRef="decision_picada" targetRef="retirarse_picada">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${no}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_85" sourceRef="pagar_picada" flowable:class="test.picadas.pagar" targetRef="finalización"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_86" sourceRef="retirarse_picada" flowable:class="test.picadas.retirarse" targetRef="finalización"></sequenceFlow>
+  </process>
+</definitions>

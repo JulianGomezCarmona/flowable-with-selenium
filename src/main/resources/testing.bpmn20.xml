@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+        xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:flowable="http://flowable.org/bpmn"
+        xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+        xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+        xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+        xmlns:design="http://flowable.org/design"
+        typeLanguage="http://www.w3.org/2001/XMLSchema"
+        expressionLanguage="http://www.w3.org/1999/XPath"
+        targetNamespace="http://flowable.org/test"
+        design:palette="flowable-work-process-palette">
+
+  <!-- Definición del proceso principal -->
+  <process id="testing" name="testing" isExecutable="true" flowable:candidateStarterGroups="flowableUser">
+
+    <!-- Tareas de servicio -->
+    <userTask flowable:candidateGroups="managers" id="test" name="Inicar test"></userTask>
+
+    <serviceTask id="nuevo_producto" flowable:class="test.Lunes" name="Registrar nuevo Producto"></serviceTask>
+    <serviceTask id="nueva_venta" flowable:class="test.Martes" name="Nueva venta"></serviceTask>
+    <serviceTask id="nueva_compra" flowable:class="test.Miercoles" name="Nueva compra"></serviceTask>
+    <serviceTask id="eliminar_producto" flowable:class="test.Jueves" name="Eliminar producto"></serviceTask>
+    <serviceTask id="editar_producto" flowable:class="test.Viernes" name="Editar producto"></serviceTask>
+
+    <!-- Gateways paralelos -->
+    <parallelGateway id="promo_dia" name="Test de pruebas"></parallelGateway>
+    <parallelGateway id="final_procesos" name="Finalizacion de procesos paralelos"></parallelGateway>
+
+    <!-- Eventos de inicio y fin -->
+    <startEvent id="Inicio" name="Comienzo" flowable:initiator="initiator" flowable:formFieldValidation="false"></startEvent>
+    <endEvent id="finalización" name="Fin"></endEvent>
+
+    <!-- Flujos de secuencia -->
+    <sequenceFlow id="bpmnSequenceFlow_49" sourceRef="nuevo_producto" targetRef="final_procesos"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_50" sourceRef="nueva_venta" targetRef="final_procesos"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_51" sourceRef="nueva_compra" targetRef="final_procesos"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_52" sourceRef="eliminar_producto" targetRef="final_procesos"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_53" sourceRef="editar_producto" targetRef="final_procesos"></sequenceFlow>
+
+    <sequenceFlow id="bpmnSequenceFlow_58" sourceRef="test" targetRef="promo_dia"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_15" sourceRef="promo_dia" targetRef="nuevo_producto"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_17" sourceRef="promo_dia" targetRef="nueva_venta"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_19" sourceRef="promo_dia" targetRef="nueva_compra"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_21" sourceRef="promo_dia" targetRef="eliminar_producto"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_23" sourceRef="promo_dia" targetRef="editar_producto"></sequenceFlow>
+
+    <sequenceFlow id="bpmnSequenceFlow_54" sourceRef="final_procesos" targetRef="finalización"></sequenceFlow>
+    <sequenceFlow id="bpmnSequenceFlow_57" sourceRef="Inicio" targetRef="test"></sequenceFlow>
+
+  </process>
+</definitions>
