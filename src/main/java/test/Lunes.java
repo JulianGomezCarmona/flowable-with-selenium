@@ -12,6 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import test.reuse.SeleniumHelper;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -19,34 +20,23 @@ import java.util.Date;
 
 
 public class Lunes implements JavaDelegate {
-    private static final ExtentReports extent = new ExtentReports();
+//    private static final ExtentReports extent = new ExtentReports();
 
 
     public void execute(DelegateExecution execution) {
-//        ExtentSparkReporter sparkReporter = new ExtentSparkReporter("Report/test-result.html");
-//        extent.attachReporter(sparkReporter);
         ExtentReports extent = Reports.getInstance();
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        ExtentTest test = extent.createTest("registro de objeto-"+timestamp);
+        ExtentTest test = extent.createTest("Registro de objeto en el  inventario");
 
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.manage().window().maximize();
-//        driver.manage().window().fullscreen();
+        SeleniumHelper helper = new SeleniumHelper();
+        helper.setup();
+        WebDriverWait wait = helper.getWait();
+
         try {
-            driver.get("https://demoface.dynamiaerp.co/login");
-            WebElement input = driver.findElement(By.xpath("//input[@placeholder='Correo electrónico o Usuario']"));
-            input.sendKeys("admin");
-
-            WebElement input2 = driver.findElement(By.xpath("//input[@placeholder='Password']"));
-            input2.sendKeys("admindemo");
+//      login
+            helper.login("https://demoface.dynamiaerp.co/login","admin","admindemo");
 
 
-
-            WebElement button = driver.findElement(By.xpath("//button[@type='button']"));
-            button.click();
-
-//      Abrir modulo de ventas
+//      Abrir modulo de inventario
             WebElement inventarioModule = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='#inventario-module']")));
             inventarioModule.click();
 
@@ -61,8 +51,7 @@ public class Lunes implements JavaDelegate {
 
 //       Registrar nuevo producto
             WebElement nombreProduct = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@placeholder='Nombre *']")));
-            String nombre = "Perro caliente";
-            nombreProduct.sendKeys(nombre);
+            nombreProduct.sendKeys("Perro caliente");
             WebElement productType = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@class='tipo-field entitypickerbox']//a[@role='button']")));
             productType.click();
             WebElement selectProductType = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='PRODUCTO']")));
@@ -72,11 +61,9 @@ public class Lunes implements JavaDelegate {
             WebElement selectLineaPrincipal = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='01 - PRODUCTOS']")));
             selectLineaPrincipal.click();
             WebElement precioVenta = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@class='decimalbox-calc precioVenta-field z-span']//input")));
-            String precio = "5000";
-            precioVenta.sendKeys(precio);
+            precioVenta.sendKeys("5000");
             WebElement costoManual = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@class='decimalbox-calc costoAproximado-field z-span']//input")));
-            String costo = "4000";
-            costoManual.sendKeys(costo);
+            costoManual.sendKeys("4000");
 
 //      Guardar producto
             WebElement guardar = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()=' Guardar']")));
@@ -86,7 +73,7 @@ public class Lunes implements JavaDelegate {
             test.log(Status.FAIL,"No se registro el producto");
             e.printStackTrace();
         }finally {
-            driver.quit();
+            helper.closet();
             extent.flush();
         }
     }

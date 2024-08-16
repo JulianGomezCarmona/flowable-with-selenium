@@ -24,7 +24,9 @@ public class Miercoles implements JavaDelegate {
         buttonSearch.click();
         WebElement videoSelected = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/watch?v=v3-9eDFDAFw&pp=ygUbSmFyZGluIGNvbiBlbmFuaXRvcyBtZWxlbmR5']")));
         videoSelected.click();
-
+//        System.out.println("Hoy viernes tenemos las picadas a mitad de precio");
+//        System.out.println("Precio normal de las picadas: $36.000");
+//        System.out.println("Precio de las picadas con promoción: $18.000");
 
     }
 }

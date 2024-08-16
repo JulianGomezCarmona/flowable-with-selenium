@@ -12,36 +12,26 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import test.reuse.SeleniumHelper;
 
 import java.time.Duration;
 
 public class Martes implements JavaDelegate {
-    private static final ExtentReports extent = new ExtentReports();
+//    private static final ExtentReports extent = new ExtentReports();
 
     public void execute(DelegateExecution execution) {
 //        Reports reports = new Reports();
 //        reports.report("Report/test-new-venta.html");
         ExtentReports extent = Reports.getInstance();
-        ExtentTest test = extent.createTest("registro de nueva factura electronica");
+        ExtentTest test = extent.createTest("Registro de nueva factura electronica");
 
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.manage().window().maximize();
+        SeleniumHelper helper = new SeleniumHelper();
+        helper.setup();
+        WebDriverWait wait = helper.getWait();
 
         try {
-            driver.get("https://demoface.dynamiaerp.app/login");
-            WebElement input = driver.findElement(By.xpath("//input[@placeholder='Correo electrónico o Usuario']"));
-            WebElement input2 = driver.findElement(By.xpath("//input[@placeholder='Password']"));
-
-
-////    Introducir texto
-            String text = "admin";
-            input.sendKeys(text);
-            String text2 = "admindemo";
-            input2.sendKeys(text2);
-
-            WebElement button = driver.findElement(By.xpath("//button[@type='button']"));
-            button.click();
+//        login
+            helper.login("https://demoface.dynamiaerp.co/login","admin","admindemo");
 
 
 //        Abrir modulo de ventas
@@ -65,15 +55,13 @@ public class Martes implements JavaDelegate {
 
 //        Ingrezar fecha de entrega
             WebElement fechaEntrega = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@placeholder='Fecha Entrega ']")));
-            String entrega = "10/02/2024";
-            fechaEntrega.sendKeys(entrega);
+            fechaEntrega.sendKeys("10/02/2024");
 
 //        Buscar productos
             WebElement buscadorProducto = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@title='Buscador de Productos']")));
             buscadorProducto.click();
             WebElement buscador = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@placeholder='Buscar' and @class='form-control'] ")));
-            String textbuscar = "+++";
-            buscador.sendKeys(textbuscar);
+            buscador.sendKeys("+++");
             WebElement buscadorButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@title='Buscar']")));
             buscadorButton.click();
 
@@ -98,7 +86,7 @@ public class Martes implements JavaDelegate {
             test.log(Status.FAIL,"No se registro la nueva factura");
             e.printStackTrace();
         }finally {
-            driver.quit();
+            helper.closet();
             extent.flush();
         }
 

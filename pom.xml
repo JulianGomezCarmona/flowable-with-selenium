@@ -57,6 +57,12 @@
             <artifactId>extentreports</artifactId>
             <version>5.1.1</version>
         </dependency>
+        <!--   Dependencias de playwright     -->
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>1.45.1</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.aventstack/extentreports -->
         <dependency>
             <groupId>com.aventstack</groupId>
